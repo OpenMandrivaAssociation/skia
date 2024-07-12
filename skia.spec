@@ -30,6 +30,10 @@ BuildRequires: pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(graphite2)
 BuildRequires: pkgconfig(libsharpyuv)
 BuildRequires: pkgconfig(libpcre2-8)
+BuildRequires: pkgconfig(egl)
+BuildRequires: pkgconfig(gl)
+BuildRequires: pkgconfig(glesv1_cm)
+BuildRequires: pkgconfig(glesv2)
 
 %description
 The Skia 2D graphics library
