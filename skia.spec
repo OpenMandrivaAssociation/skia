@@ -34,6 +34,7 @@ BuildRequires: pkgconfig(egl)
 BuildRequires: pkgconfig(gl)
 BuildRequires: pkgconfig(glesv1_cm)
 BuildRequires: pkgconfig(glesv2)
+BuildRequires: pkgconfig(icu-uc)
 
 %description
 The Skia 2D graphics library
