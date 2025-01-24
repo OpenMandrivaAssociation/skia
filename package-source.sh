@@ -1,6 +1,7 @@
 #!/bin/sh
 rm -rf skia
-git clone --depth=1 https://github.com/google/skia.git
+V=$(cat *.spec |grep '^Version:' |head -n1 |awk '{ print $2; }' |cut -d. -f1)
+git clone -b chrome/m${V} --depth=1 https://github.com/google/skia.git
 cd skia
 rm -rf .git
 INTERESTING=false
@@ -28,12 +29,12 @@ cat DEPS |while read l; do
 	git fetch --depth=1 origin $C
 	git reset $C --hard
 	rm -rf .git
-#	git checkout -b skia $C
+	git checkout -b skia $C || :
 	cd ..
 	if echo $D |grep -q /; then
 		popd
 	fi
 done
 cd ..
-tar cf skia-$(date +%Y%m%d).tar skia
+tar cf skia-${V}.$(date +%Y%m%d).tar skia
 zstd -f --rm --ultra -22 *.tar

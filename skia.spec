@@ -5,7 +5,7 @@
 %define devpackage %mklibname -d skia
 
 Name: skia
-Version: 20240711
+Version: 129.20250124
 Release: 1
 # Source must be generated with package-source.sh due to insane
 # amounts of internalized external libraries
@@ -88,14 +88,28 @@ gn gen --args="${GN_DEFINES}" out/Release
 
 %install
 mkdir -p %{buildroot}%{_libdir} %{buildroot}%{_includedir}/skia
-mv out/Release/*.so* %{buildroot}%{_libdir}/
+mv out/Release/*.so* out/Release/*.a %{buildroot}%{_libdir}/
 
-find include out/Release -type f -and -\( -name "*.h" -or -name "*.hh" -or -name "*.hpp" -or -name "*.hxx" -or -name "*.inc" -\) -exec install -v -D -m644 {} %{buildroot}%{_includedir}/skia/{} \;
+find include modules out/Release -type f -and -\( -name "*.h" -or -name "*.hh" -or -name "*.hpp" -or -name "*.hxx" -or -name "*.inc" -\) -exec install -v -D -m644 {} %{buildroot}%{_includedir}/skia/{} \;
+mv %{buildroot}%{_includedir}/skia/include/* %{buildroot}%{_includedir}/skia
+rmdir %{buildroot}%{_includedir}/skia/include
+find %{buildroot}%{_includedir}/skia -type f |xargs sed -i -e 's,#include "include/,#include ",'
 # We don't need headers that are specific to other OSes
 rm -rf %{buildroot}%{_includedir}/skia/android
+
+mkdir -p %{buildroot}%{_libdir}/pkgconfig
+cat >%{buildroot}%{_libdir}/pkgconfig/skia.pc <<EOF
+Name: skia
+Description: %{summary}
+Version: 129
+Libs: -lskia  -lskparagraph -lskshaper -lskunicode_core -lskunicode_icu -lskunicode_client_icu -lskcms
+Cflags: -I%{_includedir}/skia
+EOF
 
 %files -n %{libpackage}
 %{_libdir}/*
 
 %files -n %{devpackage}
+%{_libdir}/*.a
 %{_includedir}/skia
+%{_libdir}/pkgconfig/*.pc
