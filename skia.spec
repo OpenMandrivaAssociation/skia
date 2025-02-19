@@ -6,7 +6,7 @@
 
 Name: skia
 Version: 129.20250218
-Release: 1
+Release: 2
 # Source must be generated with package-source.sh due to insane
 # amounts of internalized external libraries
 Source0: skia-%{version}.tar.zst
@@ -107,7 +107,7 @@ Cflags: -I%{_includedir}/skia
 EOF
 
 %files -n %{libpackage}
-%{_libdir}/*
+%{_libdir}/*.so
 
 %files -n %{devpackage}
 %{_libdir}/*.a
