@@ -5,7 +5,7 @@
 %define devpackage %mklibname -d skia
 
 Name: skia
-Version: 129.20250124
+Version: 129.20250218
 Release: 1
 # Source must be generated with package-source.sh due to insane
 # amounts of internalized external libraries
