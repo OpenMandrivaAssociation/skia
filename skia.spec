@@ -16,6 +16,7 @@ URL: https://github.com/skia/skia
 License: Apache-2.0
 Group: System/Libraries
 BuildRequires: gn
+BuildRequires: ninja
 BuildRequires: pkgconfig(fontconfig)
 BuildRequires: pkgconfig(freetype2)
 BuildRequires: pkgconfig(expat)
