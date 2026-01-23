@@ -6,7 +6,7 @@
 
 Name: skia
 Version: 144.20260123
-Release: 1
+Release: 2
 # Source must be generated with package-source.sh due to insane
 # amounts of internalized external libraries
 Source0: skia-%{version}.tar.zst
@@ -102,7 +102,7 @@ mkdir -p %{buildroot}%{_libdir}/pkgconfig
 cat >%{buildroot}%{_libdir}/pkgconfig/skia.pc <<EOF
 Name: skia
 Description: %{summary}
-Version: 129
+Version: 144
 Libs: -lskia  -lskparagraph -lskshaper -lskunicode_core -lskunicode_icu -lskunicode_client_icu -lskcms
 Cflags: -I%{_includedir}/skia
 EOF
