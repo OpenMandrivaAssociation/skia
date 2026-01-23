@@ -4,6 +4,10 @@ V=$(cat *.spec |grep '^Version:' |head -n1 |awk '{ print $2; }' |cut -d. -f1)
 git clone -b chrome/m${V} --depth=1 https://github.com/google/skia.git
 cd skia
 rm -rf .git
+# Get rid of superfluous bloat
+for i in v8 swiftshader emsdk dng_sdk perfetto vulkan-deps libpng freetype harfbuzz icu unicodetools test_fonts breakpad externals/icu; do
+	sed -i "/${i//\//\\/}/d" DEPS
+done
 INTERESTING=false
 cat DEPS |while read l; do
 	l="$(echo $l |sed -e 's,#.*,,' |tr "'" '"')"
@@ -13,6 +17,8 @@ cat DEPS |while read l; do
 		continue
 	fi
 	[ "$l" = '"bin": {' ] && INTERESTING=false
+	[ "$l" = '"resources": {' ] && INTERESTING=false
+	[ "$l" = '"buildtools": {' ] && INTERESTING=false
 	$INTERESTING || continue
 	D=$(echo $l |cut -d'"' -f2)
 	G=$(echo $l |cut -d'"' -f4)
@@ -42,6 +48,8 @@ cat DEPS |while read l; do
 		popd
 	fi
 done
+find . -name "*.exe" -o -name "*.dll" -o -name "*.wasm" -delete
+find . -name "*.dat" -size +10M -delete
 cd ..
 tar cf skia-${V}.$(date +%Y%m%d).tar skia
 zstd -f --rm --ultra -22 *.tar
