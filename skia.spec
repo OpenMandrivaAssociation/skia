@@ -6,7 +6,7 @@
 
 Name: skia
 Version: 144.20260123
-Release: 2
+Release: 3
 # Source must be generated with package-source.sh due to insane
 # amounts of internalized external libraries
 Source0: skia-%{version}.tar.zst
@@ -57,6 +57,9 @@ Development files for the Skia 2D graphics library
 %autosetup -p1 -n skia
 ln -s %{_bindir}/gn bin/
 
+# Restore some older APIs still used by ladybird (and possibly others)
+sed -i -e 's,.*SK_HIDE_PATH_EDIT_METHODS,# &,' BUILD.gn
+
 %conf
 GN_DEFINES="ar=\"%{__ar}\""
 GN_DEFINES+=" cc=\"%{__cc}\""
@@ -73,6 +76,7 @@ GN_DEFINES+=" skia_use_ffmpeg=true"
 GN_DEFINES+=" skia_use_freetype_woff2=true"
 GN_DEFINES+=" skia_use_freetype_zlib_bundled=false"
 GN_DEFINES+=" skia_use_libjxl_decode=true"
+GN_DEFINES+=" skia_use_system_brotli=true"
 GN_DEFINES+=" skia_use_system_expat=true"
 GN_DEFINES+=" skia_use_system_freetype2=true"
 GN_DEFINES+=" skia_use_system_harfbuzz=true"
@@ -86,9 +90,17 @@ gn gen --args="${GN_DEFINES}" out/Release
 
 %build
 %ninja_build -C out/Release
+cd out/Release
+# For a non-component build, turn the static library into a shared library with
+#%{__cxx} -shared -o libskia.so.1 -Wl,-soname,libskia.so.1 -Wl,--whole-archive libskia.a -Wl,--no-whole-archive
+#ln -s libskia.so.1 libskia.so
 
 %install
 mkdir -p %{buildroot}%{_libdir} %{buildroot}%{_includedir}/skia
+
+# Not ours to own...
+rm -f out/Release/libbrotli.a
+
 mv out/Release/*.so* out/Release/*.a %{buildroot}%{_libdir}/
 
 find include modules out/Release -type f -and -\( -name "*.h" -or -name "*.hh" -or -name "*.hpp" -or -name "*.hxx" -or -name "*.inc" -\) -exec install -v -D -m644 {} %{buildroot}%{_includedir}/skia/{} \;
