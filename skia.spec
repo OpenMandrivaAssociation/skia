@@ -114,7 +114,7 @@ cat >%{buildroot}%{_libdir}/pkgconfig/skia.pc <<EOF
 Name: skia
 Description: %{summary}
 Version: %(echo %{version} |cut -d. -f1)
-Libs: -lskia  -lskparagraph -lskshaper -lskunicode_core -lskunicode_icu -lskunicode_client_icu -lskcms
+Libs: -lskia  -lskparagraph -lskshaper -lskunicode_core -lskunicode_icu -lskcms
 Cflags: -I%{_includedir}/skia
 EOF
 
